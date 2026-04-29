@@ -34,7 +34,19 @@ def get_gbfs_feeds():
     # 2. Verificar que la respuesta sea correcta (código 200)
     # 3. Devolver los datos en formato JSON
     # 4. Manejar posibles errores (conexión, formato, etc.)
-    pass
+    
+    try:
+        response = requests.get(base_url)
+        if response.status_code == 200:
+            return response.json()
+        
+        else:
+            print(f"Error {response.status_code}")
+            return None
+    
+    except requests.exceptions.RequestException as e:
+        print(f"Error {e}")
+        return None
 
 
 def extract_feeds_info(feeds_data):
@@ -53,7 +65,22 @@ def extract_feeds_info(feeds_data):
     # 2. Extraer la lista de feeds para el idioma inglés (en)
     # 3. Crear y devolver una lista con la información relevante de cada feed
     # 4. Manejar posibles errores en la estructura de los datos
-    pass
+    if feeds_data == None:
+        return None
+    
+    else:
+        try:
+            feeds = feeds_data["data"]["en"]["feeds"]
+            feeds_info = []
+            for feed in feeds:
+                feeds_info.append({"name": feed["name"], "url": feed["url"]})
+            return feeds_info
+        
+        except (KeyError, TypeError) as e:
+            print(f"Error al extraer la información de los feeds: {e}")
+            return None
+
+
 
 def print_feeds_summary(feeds_info):
     """
